@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Government Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="admin-container" id="government-dashboard" style="display: none;">
+        <!-- Header -->
+        <div class="admin-header">
+            <div class="header-left">
+                <i class="fas fa-landmark"></i>
+                <h1>GOVERNMENT DASHBOARD</h1>
+            </div>
+            <div class="header-right">
+                <div class="user-info">
+                    <i class="fas fa-user-circle"></i>
+                    <span id="user-name">Official</span>
+                    <span class="permission-badge" id="user-job">Governor</span>
+                </div>
+                <button class="close-btn" onclick="closeDashboard()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="nav-tabs">
+            <div class="tab active" data-tab="overview">
+                <i class="fas fa-home"></i><span>Overview</span>
+            </div>
+            <div class="tab" data-tab="voting" data-permission="access_voting">
+                <i class="fas fa-vote-yea"></i><span>Voting</span>
+            </div>
+            <div class="tab" data-tab="legislation" data-permission="propose_laws">
+                <i class="fas fa-gavel"></i><span>Legislation</span>
+            </div>
+            <div class="tab" data-tab="appointments" data-permission="access_appointments">
+                <i class="fas fa-user-tie"></i><span>Appointments</span>
+            </div>
+            <div class="tab" data-tab="budget" data-permission="access_treasury">
+                <i class="fas fa-money-bill-wave"></i><span>Budget</span>
+            </div>
+            <div class="tab" data-tab="inspections" data-permission="access_inspections">
+                <i class="fas fa-clipboard-check"></i><span>Inspections</span>
+            </div>
+            <div class="tab" data-tab="officials">
+                <i class="fas fa-users"></i><span>Officials</span>
+            </div>
+        </div>
+
+        <!-- Tab Contents -->
+        <div class="tab-contents">
+            <!-- Overview Tab -->
+            <div class="tab-content active" id="overview">
+                <div class="dashboard-stats">
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-vote-yea"></i></div>
+                        <div class="stat-info">
+                            <h3 id="stat-active-votes">0</h3>
+                            <p>Active Votes</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-user-tie"></i></div>
+                        <div class="stat-info">
+                            <h3 id="stat-pending-appointments">0</h3>
+                            <p>Pending Appointments</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-dollar-sign"></i></div>
+                        <div class="stat-info">
+                            <h3 id="stat-balance">$0</h3>
+                            <p>Government Balance</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="recent-activity-section">
+                    <h3><i class="fas fa-history"></i> Recent Activity</h3>
+                    <div id="recent-activity-list" class="activity-list">
+                        <p class="no-data">No recent activity</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Voting Tab -->
+            <div class="tab-content" id="voting">
+                <div class="section-header-inline">
+                    <h3><i class="fas fa-vote-yea"></i> Voting System</h3>
+                    <button class="btn-primary" onclick="showCreateVoteModal()" data-permission="propose_laws">
+                        <i class="fas fa-plus"></i> Create Vote
+                    </button>
+                </div>
+
+                <div class="vote-filters">
+                    <button class="filter-btn active" data-filter="active">Active</button>
+                    <button class="filter-btn" data-filter="ended">Ended</button>
+                    <button class="filter-btn" data-filter="all">All</button>
+                </div>
+
+                <div id="votes-list" class="votes-list"></div>
+            </div>
+
+            <!-- Legislation Tab -->
+            <div class="tab-content" id="legislation">
+                <div class="section-header-inline">
+                    <h3><i class="fas fa-gavel"></i> Legislative Management</h3>
+                    <button class="btn-primary" onclick="showProposeLawModal()" data-permission="propose_laws">
+                        <i class="fas fa-plus"></i> Propose Law
+                    </button>
+                </div>
+
+                <div class="law-filters">
+                    <button class="law-filter-btn active" data-filter="active">Active Laws</button>
+                    <button class="law-filter-btn" data-filter="proposed">Proposed Laws</button>
+                    <button class="law-filter-btn" data-filter="vetoed">Veto'd Laws</button>
+                </div>
+
+                <div id="laws-list" class="laws-list"></div>
+            </div>
+
+            <!-- Appointments Tab -->
+            <div class="tab-content" id="appointments">
+                <div class="section-header-inline">
+                    <h3><i class="fas fa-user-tie"></i> Government Appointments</h3>
+                    <button class="btn-primary" onclick="showAppointModal()">
+                        <i class="fas fa-plus"></i> Appoint Official
+                    </button>
+                </div>
+                <div id="appointments-list" class="appointments-list"></div>
+            </div>
+
+            <!-- Budget Tab -->
+            <div class="tab-content" id="budget">
+                <h3><i class="fas fa-money-bill-wave"></i> Budget Management</h3>
+                <div id="budget-overview" class="budget-overview"></div>
+
+                <h3 style="margin-top: 30px;"><i class="fas fa-receipt"></i> Recent Transactions</h3>
+                <div id="transactions-list" class="transactions-list"></div>
+            </div>
+
+            <!-- Inspections Tab -->
+            <div class="tab-content" id="inspections">
+                <div class="section-header-inline">
+                    <h3><i class="fas fa-clipboard-check"></i> Business Inspections</h3>
+                    <button class="btn-primary" onclick="startInspection()">
+                        <i class="fas fa-clipboard-check"></i> Start Inspection
+                    </button>
+                </div>
+
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="business-search" placeholder="Search business name...">
+                    <button class="btn-search" onclick="searchInspections()">Search</button>
+                </div>
+
+                <div id="inspections-list" class="inspections-grid"></div>
+            </div>
+
+            <!-- Officials Tab -->
+            <div class="tab-content" id="officials">
+                <h3><i class="fas fa-users"></i> Government Officials Directory</h3>
+                <div id="officials-list" class="officials-grid"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Vote Modal -->
+    <div id="create-vote-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Create Vote</h2>
+                <button onclick="closeModal('create-vote-modal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Vote Type</label>
+                    <select id="vote-type">
+                        <option value="law">Law Proposal</option>
+                        <option value="official">Official Election</option>
+                        <option value="budget">Budget Approval</option>
+                        <option value="impeachment">Impeachment</option>
+                        <option value="general">General Proposal</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Title</label>
+                    <input type="text" id="vote-title" placeholder="Enter vote title">
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="vote-description" rows="4" placeholder="Enter vote description"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Duration (hours)</label>
+                    <input type="number" id="vote-duration" value="48" min="24" max="168">
+                </div>
+                <div class="form-group">
+                    <label>Options (one per line)</label>
+                    <textarea id="vote-options" rows="3" placeholder="Yes&#10;No">Yes
+No</textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeModal('create-vote-modal')">Cancel</button>
+                <button class="btn-primary" onclick="createVote()">Create Vote</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Appoint Official Modal -->
+    <div id="appoint-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Appoint Official</h2>
+                <button onclick="closeModal('appoint-modal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Citizen ID</label>
+                    <input type="text" id="appoint-citizenid" placeholder="Enter citizen ID">
+                </div>
+                <div class="form-group">
+                    <label>Position</label>
+                    <select id="appoint-job"></select>
+                </div>
+                <div class="form-group">
+                    <label>Notes (optional)</label>
+                    <textarea id="appoint-notes" rows="3" placeholder="Enter any notes"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeModal('appoint-modal')">Cancel</button>
+                <button class="btn-primary" onclick="appointOfficial()">Appoint</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
