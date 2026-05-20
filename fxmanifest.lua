@@ -3,7 +3,7 @@ game 'gta5'
 
 lua54 'yes'
 
-author 'Prelude RP Development'
+author 'Niko'
 description 'Comprehensive Government Management System'
 version '1.0.0'
 
